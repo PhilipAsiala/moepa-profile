@@ -1,0 +1,103 @@
+# SPOP SHACL shapes (Draft)
+# Checks presence and basic typing of the minimum provenance record.
+# Informative until the profile exits Draft status.
+# License: Apache-2.0
+
+PREFIX spop:  <https://w3id.org/spop/ns#>
+PREFIX sh:    <http://www.w3.org/ns/shacl#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX dash:  <http://datashapes.org/dash#>
+
+#################################################################
+# Shape for a SPOP provenance record (reifier or named graph node)
+#################################################################
+
+spop:ProvenanceRecordShape
+    a sh:NodeShape ;
+    rdfs:label "SPOP Provenance Record Shape (Draft)"@en ;
+    rdfs:comment "Validates the minimum set of SPOP provenance properties. Apply to reifier nodes (annotation/reification style) or to named-graph IRIs under a graph-level provenance policy."@en ;
+    sh:name "SPOP Provenance Record" ;
+    sh:closed false ;
+
+    sh:property [
+        sh:path spop:source ;
+        sh:name "source" ;
+        sh:description "Document identity (IRI)." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "spop:source MUST be present exactly once and MUST be an IRI." ;
+    ] ;
+
+    sh:property [
+        sh:path spop:documentVersion ;
+        sh:name "document version" ;
+        sh:description "Version of the source document." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:Literal ;
+        sh:minLength 1 ;
+        sh:message "spop:documentVersion MUST be present exactly once as a non-empty literal." ;
+    ] ;
+
+    sh:property [
+        sh:path spop:documentType ;
+        sh:name "document type" ;
+        sh:description "One of spop:OrgValue, spop:Process, spop:Informational." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:in ( spop:OrgValue spop:Process spop:Informational ) ;
+        sh:message "spop:documentType MUST be exactly one of spop:OrgValue, spop:Process, or spop:Informational." ;
+    ] ;
+
+    sh:property [
+        sh:path spop:owner ;
+        sh:name "owner" ;
+        sh:description "Owner agent or organization (IRI)." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "spop:owner MUST be present exactly once and MUST be an IRI." ;
+    ] ;
+
+    sh:property [
+        sh:path spop:confidence ;
+        sh:name "confidence" ;
+        sh:description "Confidence in [0.0, 1.0]." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:message "spop:confidence MUST be an xsd:decimal in the range [0.0, 1.0]." ;
+    ] ;
+
+    sh:property [
+        sh:path spop:extractedAt ;
+        sh:name "extracted at" ;
+        sh:description "Extraction or creation timestamp." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "spop:extractedAt MUST be present exactly once as xsd:dateTime." ;
+    ] .
+
+#################################################################
+# Optional: target reifiers that reify a triple term (RDF 1.2)
+# Consumers may activate this by data graph patterns; left as
+# an open shape without fixed sh:targetClass for draft flexibility.
+#################################################################
+
+spop:ReifierProvenanceShape
+    a sh:NodeShape ;
+    rdfs:label "SPOP Reifier with Provenance (Draft)"@en ;
+    rdfs:comment "Optional shape for nodes that both reify a triple (rdf:reifies) and carry SPOP provenance. Not automatically targeted; intended for application-level selection of reifier nodes."@en ;
+    sh:property [
+        sh:path rdf:reifies ;
+        sh:minCount 1 ;
+        sh:message "A SPOP reifier SHOULD reference a triple term via rdf:reifies." ;
+    ] ;
+    sh:and ( spop:ProvenanceRecordShape ) .

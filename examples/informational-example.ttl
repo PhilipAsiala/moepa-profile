@@ -1,0 +1,37 @@
+# Informational Document example (informational) — Draft
+# Includes non-authoritative ingest confidence reduction (× 0.9)
+# License: Apache-2.0
+
+VERSION "1.2"
+PREFIX ex:   <https://example.example/ns#>
+PREFIX spop: <https://w3id.org/spop/ns#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+# Authoritative owner publishing their own informational fact
+ex:Facility42 ex:headcount 1280 {|
+    spop:source          <https://example.example/docs/hr-snapshot-2026-q2> ;
+    spop:documentVersion "2026-Q2" ;
+    spop:documentType    spop:Informational ;
+    spop:owner           <https://example.example/org/hr-analytics> ;
+    spop:confidence      0.80 ;
+    spop:extractedAt     "2026-07-20T11:10:00Z"^^xsd:dateTime
+|} .
+
+# Non-authoritative ingest: internal confidence 0.90 → published 0.81
+ex:SupplierX ex:isoCertified true {|
+    spop:source          <https://partner.example/docs/quality-statement> ;
+    spop:documentVersion "2025.08" ;
+    spop:documentType    spop:Informational ;
+    spop:owner           <https://partner.example/org> ;
+    spop:confidence      0.81 ;
+    spop:extractedAt     "2026-07-28T08:00:00Z"^^xsd:dateTime
+|} .
+
+ex:Facility42 ex:operatingRegion "EMEA" {|
+    spop:source          <https://example.example/docs/site-registry> ;
+    spop:documentVersion "2026.06" ;
+    spop:documentType    spop:Informational ;
+    spop:owner           <https://example.example/org/facilities> ;
+    spop:confidence      0.99 ;
+    spop:extractedAt     "2026-06-30T18:00:00Z"^^xsd:dateTime
+|} .

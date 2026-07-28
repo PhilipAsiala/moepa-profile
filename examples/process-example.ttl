@@ -1,0 +1,36 @@
+# Process Document example (process) — Draft
+# License: Apache-2.0
+
+VERSION "1.2"
+PREFIX ex:   <https://example.example/ns#>
+PREFIX spop: <https://w3id.org/spop/ns#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+ex:IncidentResponse ex:stepOrder 1 ;
+    ex:stepDescription "Detect and open incident ticket" {|
+        spop:source          <https://example.example/docs/sop-incident-response> ;
+        spop:documentVersion "3.4.1" ;
+        spop:documentType    spop:Process ;
+        spop:owner           <https://example.example/org/sre> ;
+        spop:confidence      0.91 ;
+        spop:extractedAt     "2026-07-15T16:45:00Z"^^xsd:dateTime
+    |} .
+
+ex:IncidentResponse ex:stepOrder 2 ;
+    ex:stepDescription "Escalate to on-call within 15 minutes" {|
+        spop:source          <https://example.example/docs/sop-incident-response> ;
+        spop:documentVersion "3.4.1" ;
+        spop:documentType    spop:Process ;
+        spop:owner           <https://example.example/org/sre> ;
+        spop:confidence      0.90 ;
+        spop:extractedAt     "2026-07-15T16:45:00Z"^^xsd:dateTime
+    |} .
+
+ex:ChangeManagement ex:requiresCAB true {|
+    spop:source          <https://example.example/docs/sop-change-management> ;
+    spop:documentVersion "2.0" ;
+    spop:documentType    spop:Process ;
+    spop:owner           <https://example.example/org/it-governance> ;
+    spop:confidence      0.94 ;
+    spop:extractedAt     "2026-07-10T10:00:00Z"^^xsd:dateTime
+|} .

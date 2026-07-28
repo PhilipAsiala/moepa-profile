@@ -1,0 +1,28 @@
+# Basic SPOP example (Draft)
+# Turtle 1.2 annotation syntax with full minimum provenance set
+# License: Apache-2.0
+
+VERSION "1.2"
+PREFIX ex:   <https://example.example/ns#>
+PREFIX spop: <https://w3id.org/spop/ns#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+# Asserted triple + provenance annotation (preferred SPOP serialization)
+ex:Asset-1001 ex:classification "controlled" {|
+    spop:source          <https://example.example/docs/data-handling-policy> ;
+    spop:documentVersion "1.2.0" ;
+    spop:documentType    spop:Process ;
+    spop:owner           <https://example.example/org/security-office> ;
+    spop:confidence      0.88 ;
+    spop:extractedAt     "2026-07-28T12:00:00Z"^^xsd:dateTime
+|} .
+
+# Second statement from the same source document
+ex:Asset-1001 ex:requiresApproval true {|
+    spop:source          <https://example.example/docs/data-handling-policy> ;
+    spop:documentVersion "1.2.0" ;
+    spop:documentType    spop:Process ;
+    spop:owner           <https://example.example/org/security-office> ;
+    spop:confidence      0.88 ;
+    spop:extractedAt     "2026-07-28T12:00:00Z"^^xsd:dateTime
+|} .

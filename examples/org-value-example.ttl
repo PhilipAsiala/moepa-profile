@@ -1,0 +1,25 @@
+# Organization Value Document example (org_value) — Draft
+# License: Apache-2.0
+
+VERSION "1.2"
+PREFIX ex:   <https://example.example/ns#>
+PREFIX spop: <https://w3id.org/spop/ns#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+ex:Enterprise ex:guidingPrinciple "People and safety before schedule" {|
+    spop:source          <https://example.example/docs/values-charter> ;
+    spop:documentVersion "1.0" ;
+    spop:documentType    spop:OrgValue ;
+    spop:owner           <https://example.example/org/board> ;
+    spop:confidence      0.95 ;
+    spop:extractedAt     "2026-07-01T09:00:00Z"^^xsd:dateTime
+|} .
+
+ex:Enterprise ex:ethicalConstraint "No automated action that contradicts published values" {|
+    spop:source          <https://example.example/docs/values-charter> ;
+    spop:documentVersion "1.0" ;
+    spop:documentType    spop:OrgValue ;
+    spop:owner           <https://example.example/org/board> ;
+    spop:confidence      0.93 ;
+    spop:extractedAt     "2026-07-01T09:00:00Z"^^xsd:dateTime
+|} .
