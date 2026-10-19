@@ -1,0 +1,36 @@
+{
+  "@context": "https://schema.asiala.net/moepa/v1",
+  "@type": "CognitiveQuintuple",
+  "@id": "urn:uuid:7a8b9c0d-1e2f-4a3b-9c4d-5e6f7a8b9c0d",
+  "moepa:Ontology": {
+    "@type": "rdf:Statement",
+    "moepa:Subject": "https://example.example/process/incident-response",
+    "moepa:Predicate": "https://example.example/ns#firstStep",
+    "moepa:Object": "https://example.example/process/incident-response/escalate-on-call-15m"
+  },
+  "moepa:Epistemology": {
+    "@type": "prov:Entity",
+    "prov:wasGeneratedBy": "urn:service:ingest",
+    "prov:generatedAtTime": "2026-07-15T16:45:00Z",
+    "moepa:cryptographicHash": "sha256-9e2c7b11",
+    "moepa:source": "https://example.example/docs/sop-incident-response",
+    "moepa:documentVersion": "3.4.1",
+    "moepa:documentType": "Process",
+    "moepa:owner": "https://example.example/org/sre",
+    "moepa:sensorTrustLevel": 0.90
+  },
+  "moepa:Metrology": {
+    "moepa:confidenceScore": 0.93,
+    "moepa:decayRate": "Medium",
+    "moepa:validUntil": "2026-10-15T16:45:00Z"
+  },
+  "moepa:Axiology": {
+    "moepa:classificationLevel": "INTERNAL",
+    "moepa:containsPII": false
+  },
+  "moepa:Praxeology": {
+    "moepa:allowedActions": ["Read", "RouteToModel", "Execute"],
+    "moepa:deniedActions": ["ExportToPublicStorage"],
+    "moepa:executionTrigger": "urn:webhook:page_on_call"
+  }
+}

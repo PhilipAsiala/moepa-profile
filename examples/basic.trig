@@ -1,0 +1,41 @@
+# MOEPA record, named-graph form (acceptable serialization)
+# Same record as basic.jsonld. The record IRI names the graph that holds
+# the asserted triple; the envelopes are stated about that graph IRI in
+# the default graph. This is the shape the moepa stack projects into its
+# graph store (one named graph of current assertions) and the shape the
+# earlier SPOP draft called "named graphs (TriG / N-Quads style)".
+# License: Apache-2.0
+
+PREFIX moepa: <https://schema.asiala.net/moepa/v1#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+
+<urn:uuid:84a5b2c9-1738-4e1a-9f5b-6d7e8a9b0c1d> {
+  <urn:user:phil_a> moepa:requestedInferenceOn <urn:dataset:financial_q3_report> .
+}
+
+<urn:uuid:84a5b2c9-1738-4e1a-9f5b-6d7e8a9b0c1d>
+    a moepa:CognitiveQuintuple ;
+    moepa:Epistemology [
+        a prov:Entity ;
+        prov:wasGeneratedBy     <urn:service:assembly> ;
+        prov:generatedAtTime    "2026-10-08T12:57:00Z"^^xsd:dateTime ;
+        moepa:cryptographicHash "sha256-a7c9f8e2" ;
+        moepa:sensorTrustLevel  0.99
+    ] ;
+    moepa:Metrology [
+        moepa:confidenceScore 0.98 ;
+        moepa:decayRate       "High" ;
+        moepa:validUntil      "2026-10-09T12:57:00Z"^^xsd:dateTime
+    ] ;
+    moepa:Axiology [
+        moepa:classificationLevel "CUI" ;
+        moepa:containsPII         false ;
+        moepa:missionAlignment    "Data Auditing" ;
+        moepa:valueWeight         85
+    ] ;
+    moepa:Praxeology [
+        moepa:allowedActions   "Read", "Encrypt", "RouteToModel" ;
+        moepa:deniedActions    "ExportToPublicStorage", "UnencryptedTransmission" ;
+        moepa:executionTrigger <urn:webhook:log_access_event>
+    ] .

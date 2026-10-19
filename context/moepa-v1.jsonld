@@ -1,0 +1,51 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "moepa": "https://schema.asiala.net/moepa/v1#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "CognitiveQuintuple": "moepa:CognitiveQuintuple",
+
+    "moepa:Ontology":     {"@type": "@id"},
+    "moepa:Epistemology": {"@type": "@id"},
+    "moepa:Metrology":    {"@type": "@id"},
+    "moepa:Axiology":     {"@type": "@id"},
+    "moepa:Praxeology":   {"@type": "@id"},
+
+    "moepa:Subject":   {"@type": "@id"},
+    "moepa:Predicate": {"@type": "@vocab"},
+    "moepa:Object":    {"@type": "@id"},
+
+    "prov:wasGeneratedBy":    {"@type": "@id"},
+    "prov:generatedAtTime":   {"@type": "xsd:dateTime"},
+    "prov:wasDerivedFrom":    {"@type": "@id"},
+    "prov:wasAttributedTo":   {"@type": "@id"},
+    "moepa:cryptographicHash": {"@type": "xsd:string"},
+    "moepa:sensorTrustLevel":  {"@type": "xsd:decimal"},
+    "moepa:source":            {"@type": "@id"},
+    "moepa:documentVersion":   {"@type": "xsd:string"},
+    "moepa:documentType":      {"@type": "@vocab"},
+    "moepa:owner":             {"@type": "@id"},
+
+    "moepa:confidenceScore": {"@type": "xsd:decimal"},
+    "moepa:decayRate":       {"@type": "xsd:string"},
+    "moepa:validUntil":      {"@type": "xsd:dateTime"},
+
+    "moepa:classificationLevel": {"@type": "xsd:string"},
+    "moepa:containsPII":         {"@type": "xsd:boolean"},
+    "moepa:missionAlignment":    {"@type": "xsd:string"},
+    "moepa:valueWeight":         {"@type": "xsd:integer"},
+
+    "moepa:allowedActions":   {"@type": "xsd:string", "@container": "@set"},
+    "moepa:deniedActions":    {"@type": "xsd:string", "@container": "@set"},
+    "moepa:executionTrigger": {"@type": "@id"},
+
+    "OrgValue":      "moepa:OrgValue",
+    "Process":       "moepa:Process",
+    "Informational": "moepa:Informational"
+  }
+}

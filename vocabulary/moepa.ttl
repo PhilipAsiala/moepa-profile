@@ -1,0 +1,222 @@
+# MOEPA profile vocabulary (Draft)
+# Namespace: https://schema.asiala.net/moepa/v1#
+# Profile of RDF 1.2 and JSON-LD 1.1 — not a competing data model.
+# License: Apache-2.0
+
+PREFIX moepa:   <https://schema.asiala.net/moepa/v1#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX vann:    <http://purl.org/vocab/vann/>
+
+moepa: a owl:Ontology ;
+    dcterms:title "MOEPA Profile Vocabulary"@en ;
+    dcterms:description "Terms for the MOEPA record: one RDF triple plus Epistemology, Metrology, Axiology, and Praxeology envelopes, serialized as JSON-LD 1.1 or RDF 1.2."@en ;
+    dcterms:license <https://www.apache.org/licenses/LICENSE-2.0> ;
+    owl:versionInfo "0.2.0-draft" ;
+    owl:priorVersion <https://w3id.org/spop/ns#> ;
+    vann:preferredNamespacePrefix "moepa" ;
+    vann:preferredNamespaceUri "https://schema.asiala.net/moepa/v1#" ;
+    rdfs:comment "DRAFT vocabulary. Subject to change. Supersedes the SPOP vocabulary (https://w3id.org/spop/ns#)."@en .
+
+#################################################################
+# The record
+#################################################################
+
+moepa:CognitiveQuintuple a rdfs:Class, owl:Class ;
+    rdfs:label "MOEPA record"@en ;
+    rdfs:comment "One asserted triple together with its four layer envelopes. The record node is the reifier of the triple (rdf:reifies) in RDF 1.2 terms, or the IRI of the named graph that holds the triple. Also called a quintuple."@en ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Envelope properties: one per layer other than Ontology
+#################################################################
+
+moepa:Ontology a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "ontology part"@en ;
+    rdfs:comment "JSON-LD only. The triple term carried by the record, as an rdf:Statement with moepa:Subject, moepa:Predicate, moepa:Object. In RDF 1.2 serializations the triple is stated directly and this property is not used."@en ;
+    rdfs:domain moepa:CognitiveQuintuple ;
+    rdfs:range rdf:Statement ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Epistemology a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "epistemology envelope"@en ;
+    rdfs:comment "Why believe it: generating agent or activity, generation time, fingerprint of this version, producer trust, and source provenance."@en ;
+    rdfs:domain moepa:CognitiveQuintuple ;
+    rdfs:range prov:Entity ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Metrology a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "metrology envelope"@en ;
+    rdfs:comment "How good it is right now: measurement confidence after quality rules, validity window, decay."@en ;
+    rdfs:domain moepa:CognitiveQuintuple ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Axiology a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "axiology envelope"@en ;
+    rdfs:comment "What it is allowed to mean for people: classification marking, PII flag, mission alignment, value weight."@en ;
+    rdfs:domain moepa:CognitiveQuintuple ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Praxeology a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "praxeology envelope"@en ;
+    rdfs:comment "What may be done with it: allowed and denied action classes, execution trigger."@en ;
+    rdfs:domain moepa:CognitiveQuintuple ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Ontology part (JSON-LD triple term)
+#################################################################
+
+moepa:Subject a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "subject"@en ;
+    rdfs:subPropertyOf rdf:subject ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Predicate a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "predicate"@en ;
+    rdfs:subPropertyOf rdf:predicate ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Object a rdf:Property ;
+    rdfs:label "object"@en ;
+    rdfs:subPropertyOf rdf:object ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Epistemology envelope
+#################################################################
+
+moepa:cryptographicHash a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "cryptographic hash"@en ;
+    rdfs:comment "SHA-256 fingerprint of this version of the record, prefixed 'sha256-'. A superseding row has the same @id and a new fingerprint. Required."@en ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:sensorTrustLevel a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "producer trust"@en ;
+    rdfs:comment "How much the producing agent or source is believed before any quality rule runs, in [0.0, 1.0]. When the publisher is not the authoritative owner of the source, SHOULD be internal_trust × 0.9. Successor of spop:confidence."@en ;
+    rdfs:range xsd:decimal ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:source a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "source"@en ;
+    rdfs:comment "Identity of the document the statement was derived from. Successor of spop:source. Aligns with prov:wasDerivedFrom and dcterms:source."@en ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:seeAlso dcterms:source ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:documentVersion a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "document version"@en ;
+    rdfs:comment "Version of the source document. Successor of spop:documentVersion."@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:documentType a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "document type"@en ;
+    rdfs:comment "Closed classification of the source document by the layer it speaks for: moepa:OrgValue (Axiology), moepa:Process (Praxeology), moepa:Informational (Epistemology). Successor of spop:documentType."@en ;
+    rdfs:range moepa:DocumentType ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:owner a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "owner"@en ;
+    rdfs:comment "Agent or organization that owns the source document. Successor of spop:owner. Aligns with dcterms:publisher and prov:wasAttributedTo."@en ;
+    rdfs:subPropertyOf prov:wasAttributedTo ;
+    rdfs:seeAlso dcterms:publisher ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Metrology envelope
+#################################################################
+
+moepa:confidenceScore a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "measurement confidence"@en ;
+    rdfs:comment "How well this assertion survived the quality rules at ingest, in [0.0, 1.0]. Required. Not reduced for ownership; that is producer trust."@en ;
+    rdfs:range xsd:decimal ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:decayRate a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "decay rate"@en ;
+    rdfs:comment "Label for how quickly the assertion loses currency, for example Low, Medium, High."@en ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:validUntil a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "valid until"@en ;
+    rdfs:comment "End of the validity window. Required."@en ;
+    rdfs:range xsd:dateTime ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Axiology envelope
+#################################################################
+
+moepa:classificationLevel a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "classification level"@en ;
+    rdfs:comment "Classification marking from the organization's ladder, for example PUBLIC, INTERNAL, CUI. Required. The clearance rule that reads it is policy, not part of the record."@en ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:containsPII a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "contains PII"@en ;
+    rdfs:range xsd:boolean ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:missionAlignment a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "mission alignment"@en ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:valueWeight a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "value weight"@en ;
+    rdfs:comment "Relative value or priority of the assertion to the organization, as an integer. A tradeoff input, not a gate."@en ;
+    rdfs:range xsd:integer ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Praxeology envelope
+#################################################################
+
+moepa:allowedActions a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "allowed actions"@en ;
+    rdfs:comment "Action classes a caller may take with this assertion. Required; may be empty. Evaluated as policy input before any tool call."@en ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:deniedActions a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "denied actions"@en ;
+    rdfs:comment "Action classes a caller may not take with this assertion. Required; may be empty. A denied class is never overridden by confidence."@en ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:executionTrigger a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "execution trigger"@en ;
+    rdfs:comment "Identifier of the procedure or hook invoked when an allowed action is taken."@en ;
+    rdfs:isDefinedBy moepa: .
+
+#################################################################
+# Document types
+#################################################################
+
+moepa:DocumentType a rdfs:Class, owl:Class ;
+    rdfs:label "Document Type"@en ;
+    rdfs:comment "Closed set of source-document types, by the layer the document speaks for."@en ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:OrgValue a moepa:DocumentType, owl:NamedIndividual ;
+    rdfs:label "Organization Value Document"@en ;
+    rdfs:comment "Mission, principles, values, policy intent, ethical constraints. Speaks for Axiology. Working code: org_value."@en ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Process a moepa:DocumentType, owl:NamedIndividual ;
+    rdfs:label "Process Document"@en ;
+    rdfs:comment "Procedures, workflows, operating instructions, how-to governance. Speaks for Praxeology. Working code: process."@en ;
+    rdfs:isDefinedBy moepa: .
+
+moepa:Informational a moepa:DocumentType, owl:NamedIndividual ;
+    rdfs:label "Informational Document"@en ;
+    rdfs:comment "Facts, observations, reports, reference knowledge, situational data. Speaks for Epistemology. Working code: informational."@en ;
+    rdfs:isDefinedBy moepa: .

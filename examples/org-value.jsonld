@@ -1,0 +1,36 @@
+{
+  "@context": "https://schema.asiala.net/moepa/v1",
+  "@type": "CognitiveQuintuple",
+  "@id": "urn:uuid:1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f",
+  "moepa:Ontology": {
+    "@type": "rdf:Statement",
+    "moepa:Subject": "https://example.example/org",
+    "moepa:Predicate": "https://example.example/ns#coreValue",
+    "moepa:Object": "https://example.example/values/safety-before-schedule"
+  },
+  "moepa:Epistemology": {
+    "@type": "prov:Entity",
+    "prov:wasGeneratedBy": "urn:service:ingest",
+    "prov:generatedAtTime": "2026-07-01T09:00:00Z",
+    "moepa:cryptographicHash": "sha256-4d1f0b9e",
+    "moepa:source": "https://example.example/docs/values-charter",
+    "moepa:documentVersion": "1.0",
+    "moepa:documentType": "OrgValue",
+    "moepa:owner": "https://example.example/org/board",
+    "moepa:sensorTrustLevel": 0.95
+  },
+  "moepa:Metrology": {
+    "moepa:confidenceScore": 0.97,
+    "moepa:decayRate": "Low",
+    "moepa:validUntil": "2027-07-01T09:00:00Z"
+  },
+  "moepa:Axiology": {
+    "moepa:classificationLevel": "PUBLIC",
+    "moepa:containsPII": false,
+    "moepa:missionAlignment": "Safety"
+  },
+  "moepa:Praxeology": {
+    "moepa:allowedActions": ["Read", "RouteToModel"],
+    "moepa:deniedActions": ["Supersede"]
+  }
+}
