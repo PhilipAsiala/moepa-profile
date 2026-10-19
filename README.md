@@ -26,7 +26,7 @@ This repository supersedes **SPOP** (*Subject–Predicate–Object–Provenance*
 | --- | --- |
 | [moepa-cognitive-architecture](https://github.com/PhilipAsiala/moepa-cognitive-architecture) | Specifies the record (§5.0) and the system of record and projections (§5.0.1) |
 | **This repo** | Normative shape of the record: context document, vocabulary, SHACL shapes, serializations |
-| [moepa](https://github.com/PhilipAsiala/moepa) | Writes and reads the record; its `schema/` resolves the context from here until it is published |
+| [moepa-lab](https://github.com/PhilipAsiala/moepa-lab) | Writes and reads the record; its `schema/` resolves the context from here until it is published |
 | [moepa-thesis](https://github.com/PhilipAsiala/moepa-thesis) | The argument for why the parts are kept separate |
 
 Namespace: `https://schema.asiala.net/moepa/v1#` (prefix `moepa:`). Context document: [`context/moepa-v1.jsonld`](context/moepa-v1.jsonld), to be published at `https://schema.asiala.net/moepa/v1`.

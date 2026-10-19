@@ -31,7 +31,7 @@ and this project aims to follow [Semantic Versioning](https://semver.org/) once 
 
 ### Notes
 
-- Source: the record shape and required fields are those written and validated by the running `moepa` stack; its sample records conform to these shapes when expanded against the published context.
+- Source: the record shape and required fields are those written and validated by the running `moepa-lab` stack; its sample records conform to these shapes when expanded against the published context.
 - Status remains **Draft**; no stability guarantees.
 
 ## [0.1.0-draft] – 2026-07-28
