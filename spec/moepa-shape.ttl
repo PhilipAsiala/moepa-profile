@@ -1,0 +1,144 @@
+# MOEPA profile SHACL shapes (Draft)
+# Checks presence and basic typing of the record and its four envelopes.
+# Informative until the profile exits Draft status.
+# Apply after JSON-LD expansion (or to Turtle 1.2 / TriG after parsing);
+# the shapes target moepa:CognitiveQuintuple nodes.
+# License: Apache-2.0
+
+PREFIX moepa: <https://schema.asiala.net/moepa/v1#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sh:    <http://www.w3.org/ns/shacl#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+
+#################################################################
+# The record
+#################################################################
+
+moepa:RecordShape
+    a sh:NodeShape ;
+    sh:targetClass moepa:CognitiveQuintuple ;
+    rdfs:label "MOEPA Record Shape (Draft)"@en ;
+    rdfs:comment "A record carries exactly one envelope per non-Ontology layer. The Ontology part is required in JSON-LD; in RDF 1.2 serializations the triple is stated directly."@en ;
+    sh:nodeKind sh:IRI ;
+    sh:message "A MOEPA record MUST have a stable IRI (@id)." ;
+
+    sh:property [
+        sh:path moepa:Epistemology ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:node moepa:EpistemologyShape ;
+        sh:message "Exactly one moepa:Epistemology envelope is required." ;
+    ] ;
+    sh:property [
+        sh:path moepa:Metrology ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:node moepa:MetrologyShape ;
+        sh:message "Exactly one moepa:Metrology envelope is required." ;
+    ] ;
+    sh:property [
+        sh:path moepa:Axiology ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:node moepa:AxiologyShape ;
+        sh:message "Exactly one moepa:Axiology envelope is required." ;
+    ] ;
+    sh:property [
+        sh:path moepa:Praxeology ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:node moepa:PraxeologyShape ;
+        sh:message "Exactly one moepa:Praxeology envelope is required." ;
+    ] ;
+    sh:property [
+        sh:path moepa:Ontology ;
+        sh:maxCount 1 ;
+        sh:node moepa:OntologyShape ;
+        sh:message "At most one moepa:Ontology part; when present it is a complete triple term." ;
+    ] .
+
+#################################################################
+# Ontology part (JSON-LD triple term)
+#################################################################
+
+moepa:OntologyShape
+    a sh:NodeShape ;
+    rdfs:label "Ontology part"@en ;
+    sh:property [ sh:path moepa:Subject ;   sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "moepa:Subject MUST be exactly one IRI." ] ;
+    sh:property [ sh:path moepa:Predicate ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "moepa:Predicate MUST be exactly one IRI." ] ;
+    sh:property [ sh:path moepa:Object ;    sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:message "moepa:Object MUST be present exactly once (IRI or literal)." ] .
+
+#################################################################
+# Epistemology envelope
+#################################################################
+
+moepa:EpistemologyShape
+    a sh:NodeShape ;
+    rdfs:label "Epistemology envelope"@en ;
+    sh:property [ sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:message "prov:wasGeneratedBy MUST be exactly one IRI (agent or activity)." ] ;
+    sh:property [ sh:path prov:generatedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+                  sh:message "prov:generatedAtTime MUST be exactly one xsd:dateTime." ] ;
+    sh:property [ sh:path moepa:cryptographicHash ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256-[0-9a-f]+$" ;
+                  sh:message "moepa:cryptographicHash MUST be exactly one string of the form sha256-<hex>." ] ;
+    sh:property [ sh:path moepa:sensorTrustLevel ; sh:maxCount 1 ; sh:minInclusive 0.0 ; sh:maxInclusive 1.0 ;
+                  sh:message "moepa:sensorTrustLevel, when present, MUST be a number in [0.0, 1.0]." ] ;
+    # Source provenance set: optional unless the record is document-derived
+    # (see spec §6.2). When any of these is present, all four MUST be.
+    sh:property [ sh:path moepa:source ;          sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path moepa:documentVersion ; sh:maxCount 1 ; sh:nodeKind sh:Literal ; sh:minLength 1 ] ;
+    sh:property [ sh:path moepa:documentType ;    sh:maxCount 1 ; sh:in ( moepa:OrgValue moepa:Process moepa:Informational ) ;
+                  sh:message "moepa:documentType MUST be one of moepa:OrgValue, moepa:Process, moepa:Informational." ] ;
+    sh:property [ sh:path moepa:owner ;           sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:or (
+        [ sh:property [ sh:path moepa:source ; sh:maxCount 0 ] ;
+          sh:property [ sh:path moepa:documentVersion ; sh:maxCount 0 ] ;
+          sh:property [ sh:path moepa:documentType ; sh:maxCount 0 ] ;
+          sh:property [ sh:path moepa:owner ; sh:maxCount 0 ] ]
+        [ sh:property [ sh:path moepa:source ; sh:minCount 1 ] ;
+          sh:property [ sh:path moepa:documentVersion ; sh:minCount 1 ] ;
+          sh:property [ sh:path moepa:documentType ; sh:minCount 1 ] ;
+          sh:property [ sh:path moepa:owner ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "Source provenance is all-or-nothing: moepa:source, moepa:documentVersion, moepa:documentType, and moepa:owner are given together or not at all." .
+
+#################################################################
+# Metrology envelope
+#################################################################
+
+moepa:MetrologyShape
+    a sh:NodeShape ;
+    rdfs:label "Metrology envelope"@en ;
+    sh:property [ sh:path moepa:confidenceScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:minInclusive 0.0 ; sh:maxInclusive 1.0 ;
+                  sh:message "moepa:confidenceScore MUST be exactly one number in [0.0, 1.0]." ] ;
+    sh:property [ sh:path moepa:validUntil ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+                  sh:message "moepa:validUntil MUST be exactly one xsd:dateTime." ] ;
+    sh:property [ sh:path moepa:decayRate ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+#################################################################
+# Axiology envelope
+#################################################################
+
+moepa:AxiologyShape
+    a sh:NodeShape ;
+    rdfs:label "Axiology envelope"@en ;
+    sh:property [ sh:path moepa:classificationLevel ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ;
+                  sh:message "moepa:classificationLevel MUST be exactly one non-empty string." ] ;
+    sh:property [ sh:path moepa:containsPII ;      sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path moepa:missionAlignment ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path moepa:valueWeight ;      sh:maxCount 1 ; sh:datatype xsd:integer ] .
+
+#################################################################
+# Praxeology envelope
+#################################################################
+
+moepa:PraxeologyShape
+    a sh:NodeShape ;
+    rdfs:label "Praxeology envelope"@en ;
+    rdfs:comment "allowedActions and deniedActions are required but may be empty sets; an empty set serializes as no triples, so presence cannot be checked in RDF. JSON-LD validators check for the key."@en ;
+    sh:property [ sh:path moepa:allowedActions ;   sh:datatype xsd:string ; sh:minLength 1 ;
+                  sh:message "Each moepa:allowedActions value MUST be a non-empty string." ] ;
+    sh:property [ sh:path moepa:deniedActions ;    sh:datatype xsd:string ; sh:minLength 1 ;
+                  sh:message "Each moepa:deniedActions value MUST be a non-empty string." ] ;
+    sh:property [ sh:path moepa:executionTrigger ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .

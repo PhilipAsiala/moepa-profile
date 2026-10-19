@@ -1,0 +1,34 @@
+{
+  "@context": "https://schema.asiala.net/moepa/v1",
+  "@type": "CognitiveQuintuple",
+  "@id": "urn:uuid:84a5b2c9-1738-4e1a-9f5b-6d7e8a9b0c1d",
+  "moepa:Ontology": {
+    "@type": "rdf:Statement",
+    "moepa:Subject": "urn:user:phil_a",
+    "moepa:Predicate": "moepa:requestedInferenceOn",
+    "moepa:Object": "urn:dataset:financial_q3_report"
+  },
+  "moepa:Epistemology": {
+    "@type": "prov:Entity",
+    "prov:wasGeneratedBy": "urn:service:assembly",
+    "prov:generatedAtTime": "2026-10-08T12:57:00Z",
+    "moepa:cryptographicHash": "sha256-a7c9f8e2",
+    "moepa:sensorTrustLevel": 0.99
+  },
+  "moepa:Metrology": {
+    "moepa:confidenceScore": 0.98,
+    "moepa:decayRate": "High",
+    "moepa:validUntil": "2026-10-09T12:57:00Z"
+  },
+  "moepa:Axiology": {
+    "moepa:classificationLevel": "CUI",
+    "moepa:containsPII": false,
+    "moepa:missionAlignment": "Data Auditing",
+    "moepa:valueWeight": 85
+  },
+  "moepa:Praxeology": {
+    "moepa:allowedActions": ["Read", "Encrypt", "RouteToModel"],
+    "moepa:deniedActions": ["ExportToPublicStorage", "UnencryptedTransmission"],
+    "moepa:executionTrigger": "urn:webhook:log_access_event"
+  }
+}

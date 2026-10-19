@@ -1,111 +1,94 @@
-# SPOP – A Provenance Profile for RDF 1.2
+# MOEPA Profile – The MOEPA Record for JSON-LD 1.1 and RDF 1.2
 
-[![Status](https://img.shields.io/badge/status-Draft-yellow)](./spec/spop-profile.md)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
+![Status](https://img.shields.io/badge/status-draft-orange) ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
-**SPOP** (*Subject–Predicate–Object–Provenance*) is a **Draft** technical profile of [RDF 1.2](https://www.w3.org/TR/rdf12-concepts/) and [Turtle 1.2](https://www.w3.org/TR/rdf12-turtle/).
+The **MOEPA profile** defines the **MOEPA record**: one RDF triple plus four envelopes, one for each layer of the MOEPA cognitive architecture other than Ontology.
 
-It defines a minimal, enterprise-oriented way to attach **provenance**, **document-type governance**, and **confidence scores** to RDF statements—without inventing a competing data model.
+| Part | Question | Carries |
+| --- | --- | --- |
+| Ontology | What is this? | Subject, predicate, object — the triple |
+| Epistemology | Why believe it? | Generating agent, time, SHA-256 fingerprint, producer trust, source document |
+| Metrology | How good is it now? | Measurement confidence after quality rules, validity window, decay |
+| Axiology | What may it mean for people? | Classification marking, PII flag, mission alignment, value weight |
+| Praxeology | What may be done with it? | Allowed and denied action classes, execution trigger |
+
+The profile constrains [JSON-LD 1.1](https://www.w3.org/TR/json-ld11/) and [RDF 1.2](https://www.w3.org/TR/rdf12-concepts/); it does not invent a competing data model. **The triple stays a triple.** The envelopes are annotations on it.
 
 > **This repository is a Draft.** Nothing here is a formal standard. Normative language is provisional.
 
+This repository supersedes **SPOP** (*Subject–Predicate–Object–Provenance*, 0.1.0-draft), which attached one flat provenance record to a triple in Turtle 1.2. The MOEPA record keeps SPOP's source-provenance set inside the Epistemology envelope, splits its single confidence into measurement confidence and producer trust, and prefers JSON-LD. The old namespace `https://w3id.org/spop/ns#` is retired; see the migration appendix in the specification.
+
 ---
 
-## Purpose
+## Where this fits
 
-SPOP targets systems that must reason over governed knowledge, including:
+| Repo | Role |
+| --- | --- |
+| [moepa-cognitive-architecture](https://github.com/PhilipAsiala/moepa-cognitive-architecture) | Specifies the record (§5.0) and the system of record and projections (§5.0.1) |
+| **This repo** | Normative shape of the record: context document, vocabulary, SHACL shapes, serializations |
+| [moepa](https://github.com/PhilipAsiala/moepa) | Writes and reads the record; its `schema/` resolves the context from here until it is published |
+| [moepa-thesis](https://github.com/PhilipAsiala/moepa-thesis) | The argument for why the parts are kept separate |
 
-- enterprise and government **RAG** pipelines;
-- **knowledge graphs** with multi-source ingestion;
-- **cognitive architectures** that separate values, processes, and facts.
+Namespace: `https://schema.asiala.net/moepa/v1#` (prefix `moepa:`). Context document: [`context/moepa-v1.jsonld`](context/moepa-v1.jsonld), to be published at `https://schema.asiala.net/moepa/v1`.
 
-Every SPOP-managed statement remains a normal RDF triple (Subject–Predicate–Object). Provenance is attached using RDF 1.2 **annotation syntax** (preferred) or **named graphs** (acceptable).
+---
 
-### Document types (working terms)
+## Required on every write
 
-| Code | Working name | Role |
-| --- | --- | --- |
-| `org_value` | Organization Value Documents | Mission, principles, policy intent |
-| `process` | Process Documents | Procedures, workflows, SOPs |
-| `informational` | Informational Documents | Facts, reports, reference knowledge |
+`@id`, `@type`; the triple; `prov:wasGeneratedBy`, `prov:generatedAtTime`, `moepa:cryptographicHash`; `moepa:confidenceScore`, `moepa:validUntil`; `moepa:classificationLevel`; `moepa:allowedActions`, `moepa:deniedActions`. A record is never updated in place: a change is a new row with the same `@id` and a new fingerprint.
 
-(Philosophical layer names—axiology, praxeology, epistemology—are mapped once in the specification and then set aside in favor of these working terms.)
-
-### Minimum provenance set
-
-1. Source / document identity  
-2. Document version  
-3. Document type (`org_value` \| `process` \| `informational`)  
-4. Owner  
-5. Confidence (0.0–1.0)  
-6. Extracted/created timestamp  
-
-**Confidence policy (summary):** when the ingesting system is not the authoritative owner, published confidence SHOULD be `internal_confidence × 0.9` so the true owner can later publish a higher-confidence version of the same logical document.
+**Two confidences.** `moepa:confidenceScore` (Metrology) is how well the assertion survived the quality rules. `moepa:sensorTrustLevel` (Epistemology) is how much the producer is believed. When the ingesting system is not the authoritative owner of the source, published producer trust SHOULD be `internal × 0.9`; measurement confidence is never reduced for ownership.
 
 ---
 
 ## Repository layout
 
-```text
+```
 .
-├── README.md                 # This file
-├── LICENSE                   # Apache-2.0
+├── README.md
+├── LICENSE                        Apache-2.0
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
+├── context/
+│   └── moepa-v1.jsonld            JSON-LD 1.1 context (the published document)
 ├── spec/
-│   ├── spop-profile.md       # Main Draft specification
-│   └── spop-shape.ttl        # Draft SHACL shapes
+│   ├── moepa-profile.md           Main Draft specification
+│   └── moepa-shape.ttl            Draft SHACL shapes
 ├── vocabulary/
-│   └── spop.ttl              # Lightweight SPOP terms
+│   └── moepa.ttl                  Vocabulary terms
 └── examples/
-    ├── basic-spop.ttl
-    ├── org-value-example.ttl
-    ├── process-example.ttl
-    └── informational-example.ttl
+    ├── basic.jsonld               service-generated record (preferred serialization)
+    ├── org-value.jsonld           document-derived, OrgValue
+    ├── process.jsonld             document-derived, Process
+    ├── informational-non-authoritative.jsonld   producer trust × 0.9
+    ├── basic.ttl                  same record, Turtle 1.2 annotation syntax
+    └── basic.trig                 same record, named graph
 ```
-
----
 
 ## How to read the specification
 
-1. Start with **[spec/spop-profile.md](./spec/spop-profile.md)** — the normative Draft text.  
-2. Skim **[vocabulary/spop.ttl](./vocabulary/spop.ttl)** for term IRIs and the three document-type values.  
-3. Open **[examples/](./examples/)** for concrete Turtle 1.2 illustrations.  
-4. Optionally use **[spec/spop-shape.ttl](./spec/spop-shape.ttl)** for draft SHACL validation of provenance records.
+1. **spec/moepa-profile.md** — the normative Draft text: record structure, required fields, two confidences, serializations, conformance, SPOP migration.
+2. **context/moepa-v1.jsonld** — the terms and type coercions a JSON-LD processor needs.
+3. **vocabulary/moepa.ttl** — term definitions and alignments to PROV-O.
+4. **examples/** — the same record in JSON-LD, Turtle 1.2, and TriG.
+5. **spec/moepa-shape.ttl** — draft SHACL for validating expanded records.
 
-**Reading order for implementers:** Abstract → Core definition → Required provenance → Confidence policy → Serialization → Examples → Conformance.
+## Validating
 
----
+The JSON-LD examples expand with the context and conform to the shapes; the TriG example parses and conforms. With `pyld`, `rdflib`, and `pyshacl` installed, expand an example to N-Quads and run `pyshacl -s spec/moepa-shape.ttl` over the result. Turtle 1.2 annotation syntax needs an RDF 1.2 parser.
 
 ## Design principles
 
-- **Profile, not competitor.** SPOP constrains RDF 1.2; it does not replace it.  
-- **Minimal vocabulary.** Prefer PROV-O, Dublin Core, and RDF 1.2 concepts; define only what the profile needs.  
-- **Governance-ready.** Document types support policy and review workflows.  
-- **Serialization-practical.** Prefer Turtle 1.2 annotation syntax; named graphs remain acceptable.  
-- **Enterprise tone.** Precise language suitable for regulated and government contexts.
-
----
-
-## Status
-
-| Item | Value |
-| --- | --- |
-| Spec status | **Draft** |
-| Spec version | 0.1.0-draft |
-| Preferred serialization | Turtle 1.2 |
-| License | Apache License 2.0 |
-
-See [CHANGELOG.md](./CHANGELOG.md) for version history.
-
----
+- **Profile, not competitor.** Constrain JSON-LD 1.1 and RDF 1.2; do not replace them.
+- **One triple, four envelopes.** Nothing from an envelope is written into the triple; no permission is derived from a confidence.
+- **Minimal vocabulary.** Use PROV-O where it fits; define only what the record needs.
+- **Append-only.** Supersession by `@id` and fingerprint.
+- **Serialization-practical.** JSON-LD for services and the lakehouse; Turtle 1.2 and TriG for graph stores.
 
 ## Contributing
 
-Contributions that improve clarity, examples, SHACL coverage, or alignment with RDF 1.2 / PROV-O are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request.
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md). Changes to required fields must be made in the architecture specification §5.0 first; this profile follows it.
 
 ## License
 
-Copyright and license terms are in [LICENSE](./LICENSE) (Apache License 2.0).
+Apache License 2.0; see [LICENSE](LICENSE).
