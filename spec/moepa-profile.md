@@ -128,6 +128,7 @@ In RDF 1.2 serializations the three Ontology properties are not used; the triple
 
 | Part | Property | Value | Meaning |
 | --- | --- | --- | --- |
+| Record | `moepa:tenantId` | string | Tenant this record belongs to; stamped by the ingesting system, never set by the author (§5.5) |
 | Epistemology | `moepa:sensorTrustLevel` | decimal in [0.0, 1.0] | Producer trust (§6) |
 | Epistemology | `moepa:source` | IRI | Governing source document (source provenance set, §6.2) |
 | Epistemology | `moepa:documentVersion` | literal | Version of that document |
@@ -148,6 +149,16 @@ A record **MUST NOT** be updated in place. A change is a new record with the sam
 ### 5.4 Keep the parts separate
 
 A probability about the assertion **MUST NOT** be written into the Ontology part. A permission **MUST NOT** be derived from a confidence. The classification marking is a fact on the record; the rule that compares a caller's clearance to it is policy and is not part of the record. The envelopes are the data those rules read; they are not the rules.
+
+### 5.5 Tenancy
+
+A record **MAY** carry `moepa:tenantId`, a string naming the tenant the record belongs to. The tenant is the logical partition of the substrate that holds the record: two tenants' records are separate holdings, even when they assert the same triple under the same `@id`.
+
+The tenant is a fact the system establishes, not a claim the author makes. The ingesting system **MUST** set the value from the authenticated identity of the submitter, resolved against the organization's identity, tenant, and clearance registry (DS8 in the capability catalog), and **MUST** overwrite any `moepa:tenantId` present in a submitted record before the record reaches storage. This is the ingest-side form of a rule the architecture states for reads: identity is a stored fact that is looked up, not a value the caller asserts.
+
+Supersession (§5.3) applies within a tenant. A write matches a stored version only when `@id`, fingerprint, and tenant all match; a write whose `@id` and fingerprint match a record of another tenant **MUST** be appended as the submitting tenant's own record. Consumers **MUST** scope deduplication, projection, and retrieval by tenant, so one tenant's records are never returned as another tenant's results.
+
+A record without `moepa:tenantId` is unscoped. Which tenant, if any, an unscoped record belongs to is a deployment decision; a consumer **MUST NOT** infer a tenant from a record's content.
 
 ---
 

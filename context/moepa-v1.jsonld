@@ -16,6 +16,8 @@
     "moepa:Axiology":     {"@type": "@id"},
     "moepa:Praxeology":   {"@type": "@id"},
 
+    "moepa:tenantId": {"@type": "xsd:string"},
+
     "moepa:Subject":   {"@type": "@id"},
     "moepa:Predicate": {"@type": "@vocab"},
     "moepa:Object":    {"@type": "@id"},

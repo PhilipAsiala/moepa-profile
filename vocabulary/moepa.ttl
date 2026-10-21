@@ -31,6 +31,15 @@ moepa:CognitiveQuintuple a rdfs:Class, owl:Class ;
     rdfs:comment "One asserted triple together with its four layer envelopes. The record node is the reifier of the triple (rdf:reifies) in RDF 1.2 terms, or the IRI of the named graph that holds the triple. Also called a quintuple."@en ;
     rdfs:isDefinedBy moepa: .
 
+# Record-level properties: established by the system, not composed by the author
+
+moepa:tenantId a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "tenant id"@en ;
+    rdfs:comment "The tenant this record belongs to: the logical partition of the substrate that holds it. Stamped by the ingesting system from the authenticated identity (the identity, tenant, and clearance registry, DS8 in the capability catalog), never accepted from the record's author. Dedupe, supersession, projection, and retrieval are scoped by it. Optional in a submitted record, where it carries no authority; a stored record carries its ingesting system's stamp."@en ;
+    rdfs:domain moepa:CognitiveQuintuple ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy moepa: .
+
 #################################################################
 # Envelope properties: one per layer other than Ontology
 #################################################################
