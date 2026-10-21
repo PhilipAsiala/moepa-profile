@@ -5,6 +5,12 @@ All notable changes to the MOEPA profile Draft will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project aims to follow [Semantic Versioning](https://semver.org/) once it leaves Draft status.
 
+## [Unreleased]
+
+### Added
+
+- `moepa:tenantId`: the tenant a record belongs to, defined in the context and the vocabulary and specified in §5.2 and the new §5.5. The value is stamped by the ingesting system from the authenticated identity and is never accepted from the record's author; supersession, deduplication, projection, and retrieval are scoped by tenant. Added from deployment: the reference implementation (`moepa-lab`) stamps tenancy at ingest, and the profile now defines the term it writes.
+
 ## [0.2.0-draft] – 2026-10-19
 
 ### Changed
