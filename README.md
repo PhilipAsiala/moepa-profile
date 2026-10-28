@@ -24,9 +24,9 @@ This repository supersedes **SPOP** (*Subject–Predicate–Object–Provenance*
 
 | Repo | Role |
 | --- | --- |
-| [moepa-cognitive-architecture](https://github.com/PhilipAsiala/moepa-cognitive-architecture) | Specifies the record (§5.0) and the system of record and projections (§5.0.1) |
+| [moepa-cognitive-architecture](https://github.com/PhilipAsiala/moepa-cognitive-architecture) | Specifies the record (§5.0), the system of record and projections (§5.0.1), and the curation ladder the record moves through (§5.2) |
 | **This repo** | Normative shape of the record: context document, vocabulary, SHACL shapes, serializations |
-| [moepa-lab](https://github.com/PhilipAsiala/moepa-lab) | Writes and reads the record; its `schema/` resolves the context from here until it is published |
+| [moepa-lab](https://github.com/PhilipAsiala/moepa-lab) | Writes, stages, promotes, and reads the record; its `schema/` resolves the context from here until it is published |
 | [moepa-thesis](https://github.com/PhilipAsiala/moepa-thesis) | The argument for why the parts are kept separate |
 
 Namespace: `https://schema.asiala.net/moepa/v1#` (prefix `moepa:`). Context document: [`context/moepa-v1.jsonld`](context/moepa-v1.jsonld), to be published at `https://schema.asiala.net/moepa/v1`.
@@ -83,6 +83,7 @@ The JSON-LD examples expand with the context and conform to the shapes; the TriG
 - **One triple, four envelopes.** Nothing from an envelope is written into the triple; no permission is derived from a confidence.
 - **Minimal vocabulary.** Use PROV-O where it fits; define only what the record needs.
 - **Append-only.** Supersession by `@id` and fingerprint.
+- **Stage is not a claim.** Bronze, silver, and gold are facts about where a record is held, kept by the holding system; the record carries no stage property and one version keeps one fingerprint through every stage (§5.6).
 - **Serialization-practical.** JSON-LD for services and the lakehouse; Turtle 1.2 and TriG for graph stores.
 
 ## Contributing

@@ -10,6 +10,7 @@ and this project aims to follow [Semantic Versioning](https://semver.org/) once 
 ### Added
 
 - `moepa:tenantId`: the tenant a record belongs to, defined in the context and the vocabulary and specified in §5.2 and the new §5.5. The value is stamped by the ingesting system from the authenticated identity and is never accepted from the record's author; supersession, deduplication, projection, and retrieval are scoped by tenant. Added from deployment: the reference implementation (`moepa-lab`) stamps tenancy at ingest, and the profile now defines the term it writes.
+- §5.6 Curation stage: the architecture's bronze/silver/gold stage is a fact about where a record is held, not a property of the record. The profile defines no stage property; a producer cannot assert one, a consumer ignores any stage-like property in a submitted record and reads gold only for decisions, and one version keeps one fingerprint through every stage. A write that reuses a known version's fingerprint for different content should be rejected rather than skipped. Added from deployment: `moepa-lab` stages ingest as bronze and rejects a fingerprint reused for changed content.
 
 ## [0.2.0-draft] – 2026-10-19
 
