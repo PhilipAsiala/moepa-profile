@@ -160,6 +160,14 @@ Supersession (§5.3) applies within a tenant. A write matches a stored version o
 
 A record without `moepa:tenantId` is unscoped. Which tenant, if any, an unscoped record belongs to is a deployment decision; a consumer **MUST NOT** infer a tenant from a record's content.
 
+### 5.6 Curation stage
+
+The architecture specification (§5.2) stages definitions by curation: bronze (raw ingest, kept for lineage), silver (human-enriched, provisional), and gold (reviewed, versioned, authoritative). The profile defines no property for that stage. The stage is a fact about where a record is held and how it got there, not a claim the record makes about itself, so it lives in the holding system (a staging table, a promotion ledger) and never in the record.
+
+A producer **MUST NOT** be able to assert a stage by writing it into a record. A consumer **MUST NOT** read a stage from a record's content, and **MUST** ignore any stage-like property in a submitted record (§5.2), the same way a submitted `moepa:tenantId` is overwritten (§5.5). The ingesting system sets the stage from its own configuration: records submitted for ingest are candidates at bronze, and only a recorded human promotion makes a record gold. A consumer that evaluates records for a decision **MUST** read gold only.
+
+The record has this shape at every stage, and one version carries one fingerprint through all of them: the same version staged at bronze, reviewed to silver, and promoted to gold is the same `moepa:cryptographicHash`. A human edit made during review is a new version and needs a new fingerprint (§5.3). A write whose `@id` and fingerprint match a known version, in a stage or in gold, but whose content differs **SHOULD** be rejected rather than skipped, so the edit is not lost without trace.
+
 ---
 
 ## 6. Confidence Policy
